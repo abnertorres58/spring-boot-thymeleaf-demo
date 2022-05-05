@@ -1,6 +1,8 @@
 package com.freudromero.springboot.thymeleafdemo.controller;
 
-import com.freudromero.springboot.thymeleafdemo.model.Employee;
+import com.freudromero.springboot.thymeleafdemo.entity.Employee;
+import com.freudromero.springboot.thymeleafdemo.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,28 +16,20 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    // Load employee data
-    private List<Employee> theEmployees;
+    private EmployeeService employeeService;
 
-    @PostConstruct
-    private void loadData() {
-        // Create employees
-        Employee employee1 = new Employee(1, "Leslie", "Andrews", "leslie@mail.com");
-        Employee employee2 = new Employee(2, "Emma", "Baumgarten", "emma@mail.com");
-        Employee employee3 = new Employee(3, "Avani", "Gupta", "avani@mail.com");
-
-        // Create the list
-        theEmployees = new ArrayList<>();
-
-        // Add to the list
-        theEmployees.add(employee1);
-        theEmployees.add(employee2);
-        theEmployees.add(employee3);
+    @Autowired
+    public EmployeeController(EmployeeService theEmployeeService) {
+        this.employeeService = theEmployeeService;
     }
 
     // add mapping for "/list"
     @GetMapping("/list")
     public String listEmployees(Model theModel){
+
+        // Get employees from the db
+        List<Employee> theEmployees = employeeService.findAll();
+
         // Add to the spring model
         theModel.addAttribute("employees", theEmployees);
 
